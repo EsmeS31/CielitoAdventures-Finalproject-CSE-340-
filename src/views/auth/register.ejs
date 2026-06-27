@@ -1,0 +1,42 @@
+<%- include("../partials/header") %>
+
+<main class="auth-page">
+  <section class="auth-panel">
+    <p class="eyebrow">Join the journey</p>
+    <h1>Create Account</h1>
+    <p>Use your account to request packages, track booking status, and submit reviews.</p>
+
+    <% if (errors.length) { %>
+      <div class="form-errors">
+        <% errors.forEach((error) => { %>
+          <p><%= error.msg %></p>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <form action="/register" method="post" class="stacked-form">
+      <div class="form-grid">
+        <label>
+          First name
+          <input name="firstName" value="<%= formData.firstName ?? '' %>" required>
+        </label>
+        <label>
+          Last name
+          <input name="lastName" value="<%= formData.lastName ?? '' %>" required>
+        </label>
+      </div>
+      <label>
+        Email
+        <input type="email" name="email" value="<%= formData.email ?? '' %>" required>
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" minlength="8" required>
+      </label>
+      <button class="primary-button" type="submit">Create Account</button>
+    </form>
+    <p class="form-note">Already have an account? <a href="/login">Login</a></p>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

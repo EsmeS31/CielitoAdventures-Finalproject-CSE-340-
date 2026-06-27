@@ -1,0 +1,102 @@
+<%- include("../partials/header") %>
+
+<div class="admin-layout">
+  <aside class="side-nav" aria-label="Admin management navigation">
+    <p>Management</p>
+    <a class="selected" href="/admin"><span>DB</span>Dashboard</a>
+    <a href="/admin/users"><span>US</span>Users</a>
+    <a href="/admin/destinations"><span>DE</span>Destinations</a>
+    <a href="/admin/packages"><span>PK</span>Packages</a>
+    <a href="/admin/bookings"><span>BK</span>Bookings</a>
+    <a href="/admin/reviews"><span>RV</span>Reviews</a>
+  </aside>
+
+  <main class="admin-main">
+    <section class="admin-heading">
+      <div>
+        <h1>Admin Overview</h1>
+        <p>Real-time performance and itinerary monitoring.</p>
+      </div>
+      <div class="admin-actions">
+        <a class="secondary-button" href="/admin/users">Manage Users</a>
+        <a class="primary-button" href="/admin/packages/new">+ Add New Package</a>
+      </div>
+    </section>
+
+    <section class="stats-grid" aria-label="Admin stats">
+      <article class="stat-card">
+        <div class="stat-top">
+          <span class="stat-icon blue">US</span>
+          <span class="trend">+12% this month</span>
+        </div>
+        <p>Total Users</p>
+        <strong><%= Number(stats.users).toLocaleString() %></strong>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top">
+          <span class="stat-icon yellow">PK</span>
+          <span>4 in draft</span>
+        </div>
+        <p>Active Packages</p>
+        <strong><%= Number(stats.activePackages).toLocaleString() %></strong>
+      </article>
+      <article class="stat-card">
+        <div class="stat-top">
+          <span class="stat-icon peach">$</span>
+          <span class="trend">+24% revenue</span>
+        </div>
+        <p>Monthly Revenue</p>
+        <strong>$<%= Number(stats.monthlyRevenue).toLocaleString() %></strong>
+      </article>
+    </section>
+
+    <section class="table-panel">
+      <div class="table-panel-header">
+        <h2>Recent Bookings</h2>
+        <a href="/admin/bookings">View All Bookings</a>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Package</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th class="align-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!bookings.length) { %>
+              <tr>
+                <td colspan="5">No bookings yet. Seed the database or create the first traveler request.</td>
+              </tr>
+            <% } %>
+            <% bookings.forEach((booking) => { %>
+              <tr>
+                <td>
+                  <div class="person-cell">
+                    <span><%= booking.first_name[0] %><%= booking.last_name[0] %></span>
+                    <div>
+                      <strong><%= booking.first_name %> <%= booking.last_name %></strong>
+                      <small><%= booking.email %></small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <strong><%= booking.package_title %></strong>
+                  <small><%= booking.duration_days %> Days · <%= booking.category %></small>
+                </td>
+                <td><%= new Date(booking.travel_date).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) %></td>
+                <td><span class="status-badge <%= booking.status %>"><%= booking.status %></span></td>
+                <td class="align-right">...</td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<%- include("../partials/footer") %>
