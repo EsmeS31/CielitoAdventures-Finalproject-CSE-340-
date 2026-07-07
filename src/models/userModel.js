@@ -41,3 +41,25 @@ export async function findUserById(id) {
 export async function verifyPassword(password, passwordHash) {
   return bcrypt.compare(password, passwordHash);
 }
+
+export async function listUsers() {
+  const result = await query(
+    `SELECT id, first_name, last_name, email, role, created_at
+     FROM users
+     ORDER BY created_at DESC`
+  );
+
+  return result.rows;
+}
+
+export async function updateUserRole(id, role) {
+  const result = await query(
+    `UPDATE users
+     SET role = $1, updated_at = now()
+     WHERE id = $2
+     RETURNING id, first_name, last_name, email, role`,
+    [role, id]
+  );
+
+  return result.rows[0] ?? null;
+}
