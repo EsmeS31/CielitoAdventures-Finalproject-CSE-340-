@@ -1,29 +1,37 @@
 # Cielito Adventures
 
-Cielito Adventures is a server-rendered travel agency web application for discovering less typical places in Mexico and requesting curated travel packages through a personal account.
+Cielito Adventures is a server-rendered travel agency web application for travelers who want curated, less typical Mexico travel experiences. Visitors can browse travel packages, create an account, request bookings, track booking status, submit reviews, and send contact messages. Admins and agents can manage operational data from protected dashboards.
 
-## Current Build Section
+## Technology Stack
 
-This first section sets up the backend scaffold and authentication foundation:
-
-- Express with ESM through `"type": "module"`
-- EJS server-rendered pages and partials
-- PostgreSQL schema with normalized related tables
+- Node.js and Express.js
+- ESM imports/exports through `"type": "module"`
+- EJS server-rendered views
+- PostgreSQL with normalized relational tables
 - `express-session` with PostgreSQL session storage
-- Register and login routes using bcrypt password hashing
-- Role-ready middleware for admin, agent, and traveler access
-- Admin dashboard frontend based on the attached visual reference
-- Global 404 and error handling middleware
+- `bcrypt` password hashing
+- Render deployment target
 
-## User Roles
+## Major Features
 
-- **Admin**: Full management access to users, packages, bookings, destinations, and reviews.
-- **Agent**: Management access for travel operations such as bookings and packages.
-- **Traveler**: Standard account access for requesting trips, tracking booking status, and writing reviews.
+- Public package browsing with filtering and dynamic package detail pages
+- Register, login, logout, and protected routes
+- Three roles: admin, agent, traveler
+- Traveler dashboard with booking requests, status history, and review management
+- Multi-stage booking workflow: requested, confirmed, completed, cancelled
+- Admin dashboard with operational stats
+- Admin package CRUD for core site content
+- Admin user role management
+- Agent/admin booking status updates with workflow history
+- Review moderation through flag/delete actions
+- Contact form saved to the database with admin response status
+- Parameterized PostgreSQL queries and server-side form validation
 
 ## Database Schema
 
-The schema is in `database/schema.sql` and includes:
+The SQL schema is in [`database/schema.sql`](database/schema.sql).
+
+Tables:
 
 - `users`
 - `destinations`
@@ -31,43 +39,18 @@ The schema is in `database/schema.sql` and includes:
 - `bookings`
 - `booking_status_history`
 - `reviews`
+- `contact_messages`
 - `session`
 
-The design uses foreign keys, enum status values, role values, and workflow history for booking status changes.
+ERD reference: [`docs/erd.md`](docs/erd.md)
 
-## Local Setup
+For final submission, export an ERD image from pgAdmin using the same table relationships and add it to this README if your instructor requires the pgAdmin export specifically.
 
-1. Install dependencies:
+## User Roles
 
-   ```bash
-   npm install
-   ```
-
-2. Create a `.env` file from the example:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Create a PostgreSQL database and update `DATABASE_URL` in `.env`.
-
-4. Run the schema:
-
-   ```bash
-   npm run db:schema
-   ```
-
-5. Optional seed data:
-
-   ```bash
-   psql "$DATABASE_URL" -f database/seed.sql
-   ```
-
-6. Start development:
-
-   ```bash
-   npm run dev
-   ```
+- **Admin/Owner**: Can manage users and roles, add/edit/delete packages, update bookings, moderate reviews, view messages, and access all dashboard data.
+- **Agent**: Can view operations, update booking statuses, moderate reviews, and respond to contact messages. Agents cannot manage users or delete core package content.
+- **Traveler**: Can browse packages, request bookings, view their booking status history, create reviews, delete their own reviews, and send contact messages.
 
 ## Test Accounts
 
@@ -77,6 +60,83 @@ Use `P@$$w0rd!` for all seeded accounts.
 - Agent: `agent@cielito.test`
 - Traveler: `traveler@cielito.test`
 
+Do not commit real passwords or secrets. The seeded password is stored only as a bcrypt hash in `database/seed.sql`.
+
+## PostgreSQL Connection
+
+The app connects to PostgreSQL through this environment variable:
+
+```bash
+DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
+```
+
+More setup details are in [`docs/postgresql-setup.md`](docs/postgresql-setup.md).
+
+## Local Setup
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Create a `.env` file:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Create a PostgreSQL database and update `DATABASE_URL` in `.env`.
+
+4. Run schema and seed data:
+
+   ```bash
+   npm run db:setup
+   ```
+
+5. Start development:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open:
+
+   ```text
+   http://localhost:3000
+   ```
+
+## Render Deployment
+
+This repo includes [`render.yaml`](render.yaml) as a starting blueprint.
+
+Required Render environment variables:
+
+```text
+NODE_ENV=production
+SESSION_SECRET=<long random generated value>
+DATABASE_URL=<Render PostgreSQL internal connection string>
+```
+
+After deploying, open the Render Shell and run:
+
+```bash
+npm run db:setup
+```
+
+That creates the tables and seeds the test accounts.
+
+## Security Notes
+
+- Passwords are hashed with bcrypt.
+- Sessions use `httpOnly`, `sameSite`, and production-only secure cookies.
+- SQL queries use parameterized placeholders.
+- User input is validated with `express-validator`.
+- `.env` is ignored and should never be committed.
+- Production disables the development preview route.
+
 ## Known Limitations
 
-This is section one of the build. The admin dashboard, schema, and authentication foundation are started, but package management, booking workflows, review CRUD, user management, and deployment configuration still need to be completed in later sections.
+- Destination CRUD is represented in the schema and package form relationship, but a dedicated destination management screen is not built yet.
+- Payment checkout is intentionally out of scope; bookings are requests, not paid orders.
+- The README links to an ERD reference, but a pgAdmin-exported ERD image still needs to be added if required by the instructor.
