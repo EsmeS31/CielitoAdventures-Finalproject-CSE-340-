@@ -38,7 +38,9 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -395,9 +397,20 @@ td small {
 }
 
 .status-badge.requested,
-.status-badge.pending {
+.status-badge.pending,
+.status-badge.draft {
   background: #fff1a8;
   color: #9a6b00;
+}
+
+.status-badge.active {
+  background: #d7f7e0;
+  color: #1e7a3b;
+}
+
+.status-badge.archived {
+  background: var(--surface-container);
+  color: var(--muted);
 }
 
 .status-badge.cancelled {
@@ -439,7 +452,9 @@ td small {
   gap: 10px;
 }
 
-input {
+input,
+select,
+textarea {
   width: 100%;
   min-height: 48px;
   padding: 12px 14px;
@@ -450,6 +465,12 @@ input {
 }
 
 input:focus {
+  outline: 2px solid rgba(50, 98, 134, 0.2);
+  border-color: var(--secondary);
+}
+
+select:focus,
+textarea:focus {
   outline: 2px solid rgba(50, 98, 134, 0.2);
   border-color: var(--secondary);
 }
@@ -529,6 +550,141 @@ input:focus {
   padding: 32px;
 }
 
+.wide-panel {
+  width: min(100%, 1180px);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 36px;
+  margin-bottom: 18px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+}
+
+.filter-bar,
+.inline-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+  margin: 28px 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.card-grid.two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.travel-card,
+.content-card,
+.booking-panel {
+  background: var(--white);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.travel-card {
+  display: grid;
+  gap: 18px;
+}
+
+.travel-image,
+.detail-image {
+  min-height: 180px;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(158, 61, 0, 0.45), rgba(50, 98, 134, 0.4)),
+    url("https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?auto=format&fit=crop&w=1200&q=80");
+  background-position: center;
+  background-size: cover;
+}
+
+.detail-image {
+  min-height: 300px;
+  margin-bottom: 24px;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 28px;
+  margin-top: 28px;
+}
+
+.review-form {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.responsive-table {
+  overflow-x: auto;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius);
+}
+
+.inline-form {
+  display: inline;
+}
+
+.link-button {
+  border: 0;
+  background: transparent;
+  color: var(--secondary);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid #ffb4ab;
+  border-radius: var(--radius);
+  background: #ffdad6;
+  color: var(--danger);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.timeline {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+  padding-left: 24px;
+  border-left: 3px solid var(--secondary);
+}
+
+.timeline li {
+  padding-left: 10px;
+}
+
 .stacked-form {
   display: grid;
   gap: 18px;
@@ -605,6 +761,15 @@ label {
   }
 
   .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-grid,
+  .card-grid.two-col,
+  .detail-layout,
+  .filter-bar,
+  .review-form,
+  .inline-controls {
     grid-template-columns: 1fr;
   }
 
