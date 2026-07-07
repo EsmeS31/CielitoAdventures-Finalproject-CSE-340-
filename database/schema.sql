@@ -27,6 +27,12 @@ EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
 
+DO $$ BEGIN
+  CREATE TYPE contact_status AS ENUM ('received', 'replied', 'closed');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
 CREATE TABLE IF NOT EXISTS users (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   first_name varchar(80) NOT NULL,
@@ -72,7 +78,8 @@ CREATE TABLE IF NOT EXISTS bookings (
   party_size integer NOT NULL CHECK (party_size > 0),
   total_price numeric(10, 2) NOT NULL CHECK (total_price >= 0),
   created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, package_id, travel_date)
 );
 
 CREATE TABLE IF NOT EXISTS booking_status_history (
@@ -97,7 +104,22 @@ CREATE TABLE IF NOT EXISTS reviews (
   UNIQUE (user_id, package_id)
 );
 
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid REFERENCES users(id) ON DELETE SET NULL,
+  name varchar(160) NOT NULL,
+  email varchar(255) NOT NULL,
+  subject varchar(180) NOT NULL,
+  message text NOT NULL,
+  status contact_status NOT NULL DEFAULT 'received',
+  response_note text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_packages_status ON packages(status);
 CREATE INDEX IF NOT EXISTS idx_bookings_user_id ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
+CREATE INDEX IF NOT EXISTS idx_reviews_package_id ON reviews(package_id);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages(status);

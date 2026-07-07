@@ -39,4 +39,15 @@ SELECT u.id, p.id, 'confirmed', CURRENT_DATE + INTERVAL '30 days', 2, p.price * 
 FROM users u
 JOIN packages p ON p.title = 'Oaxaca Culinary Tour'
 WHERE u.email = 'traveler@cielito.test'
+ON CONFLICT (user_id, package_id, travel_date) DO NOTHING;
+
+INSERT INTO reviews (user_id, package_id, rating, comment)
+SELECT u.id, p.id, 5, 'Beautifully planned and full of local food experiences.'
+FROM users u
+JOIN packages p ON p.title = 'Oaxaca Culinary Tour'
+WHERE u.email = 'traveler@cielito.test'
+ON CONFLICT (user_id, package_id) DO NOTHING;
+
+INSERT INTO contact_messages (name, email, subject, message, status)
+VALUES ('Lucia Lopez', 'lucia@example.com', 'Custom family trip', 'I would like help planning a custom family trip in Yucatan.', 'received')
 ON CONFLICT DO NOTHING;
