@@ -13,10 +13,11 @@
   <header class="site-header">
     <a class="brand" href="/">Cielito Adventures</a>
     <nav class="top-nav" aria-label="Primary navigation">
-      <a href="/">Destinations</a>
-      <a href="/">Packages</a>
+      <a href="/packages">Destinations</a>
+      <a class="<%= title.includes('Packages') || title.includes('Package') ? 'active' : '' %>" href="/packages">Packages</a>
       <a class="<%= title.includes('Admin') ? 'active' : '' %>" href="/admin">Admin</a>
       <a href="/admin">Agent</a>
+      <a href="/contact">Contact</a>
     </nav>
     <div class="header-actions">
       <% if (currentUser) { %>

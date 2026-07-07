@@ -1,0 +1,22 @@
+<%- include("../partials/header") %>
+
+<main class="simple-page">
+  <section class="panel">
+    <p class="eyebrow">Booking workflow</p>
+    <h1><%= booking.package_title %></h1>
+    <p>Status: <span class="status-badge <%= booking.status %>"><%= booking.status %></span></p>
+    <p>Travel date: <%= new Date(booking.travel_date).toLocaleDateString("en-US") %></p>
+
+    <ol class="timeline">
+      <% history.forEach((item) => { %>
+        <li>
+          <strong><%= item.new_status %></strong>
+          <p><%= item.note %></p>
+          <small><%= new Date(item.created_at).toLocaleString("en-US") %></small>
+        </li>
+      <% }) %>
+    </ol>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

@@ -1,10 +1,61 @@
 <%- include("partials/header") %>
 
 <main class="simple-page">
-  <section class="panel">
+  <section class="panel wide-panel">
     <p class="eyebrow">Traveler dashboard</p>
     <h1>Welcome, <%= currentUser.firstName %></h1>
-    <p>Your booking history and trip requests will live here in the next section.</p>
+    <p>Track your trip requests and manage reviews tied to your account.</p>
+
+    <div class="section-heading">
+      <h2>Your Booking Requests</h2>
+      <a class="secondary-button" href="/packages">Request Another Trip</a>
+    </div>
+    <div class="responsive-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Travel Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!bookings.length) { %>
+            <tr><td colspan="5">No booking requests yet.</td></tr>
+          <% } %>
+          <% bookings.forEach((booking) => { %>
+            <tr>
+              <td><strong><%= booking.package_title %></strong><small><%= booking.duration_days %> Days · <%= booking.category %></small></td>
+              <td><%= new Date(booking.travel_date).toLocaleDateString("en-US") %></td>
+              <td><span class="status-badge <%= booking.status %>"><%= booking.status %></span></td>
+              <td>$<%= Number(booking.total_price).toLocaleString() %></td>
+              <td><a href="/dashboard/bookings/<%= booking.id %>">View history</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-heading">
+      <h2>Your Reviews</h2>
+    </div>
+    <div class="card-grid two-col">
+      <% if (!reviews.length) { %>
+        <p>No reviews yet. Open a package page to leave one.</p>
+      <% } %>
+      <% reviews.forEach((review) => { %>
+        <article class="content-card">
+          <p class="eyebrow"><%= review.package_title %></p>
+          <h3><%= review.rating %>/5 stars</h3>
+          <p><%= review.comment %></p>
+          <form action="/dashboard/reviews/<%= review.id %>/delete" method="post">
+            <button class="danger-button" type="submit">Delete Review</button>
+          </form>
+        </article>
+      <% }) %>
+    </div>
   </section>
 </main>
 

@@ -1,0 +1,48 @@
+<%- include("../partials/header") %>
+
+<main class="simple-page">
+  <section class="panel wide-panel">
+    <p class="eyebrow">Curated Mexico journeys</p>
+    <h1>Travel Packages</h1>
+    <p>Browse active Cielito Adventures packages and request a booking from your account.</p>
+
+    <form class="filter-bar" action="/packages" method="get">
+      <label>
+        Category
+        <input name="category" value="<%= filters.category ?? '' %>" placeholder="Boutique, Eco-Luxury">
+      </label>
+      <label>
+        Sort
+        <select name="sort">
+          <option value="">Newest</option>
+          <option value="price_asc" <%= filters.sort === "price_asc" ? "selected" : "" %>>Price: low to high</option>
+          <option value="price_desc" <%= filters.sort === "price_desc" ? "selected" : "" %>>Price: high to low</option>
+        </select>
+      </label>
+      <button class="secondary-button" type="submit">Apply</button>
+    </form>
+
+    <div class="card-grid">
+      <% if (!packages.length) { %>
+        <p>No active packages match that filter.</p>
+      <% } %>
+      <% packages.forEach((item) => { %>
+        <article class="travel-card">
+          <div class="travel-image"></div>
+          <div>
+            <p class="eyebrow"><%= item.category %> · <%= item.duration_days %> days</p>
+            <h2><%= item.title %></h2>
+            <p><%= item.destination_name ?? "Mexico" %>, <%= item.region ?? "" %></p>
+            <p><%= item.description %></p>
+            <div class="card-actions">
+              <strong>$<%= Number(item.price).toLocaleString() %></strong>
+              <a class="primary-button" href="/packages/<%= item.id %>">View Details</a>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

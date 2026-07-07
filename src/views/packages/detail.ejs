@@ -1,0 +1,75 @@
+<%- include("../partials/header") %>
+
+<main class="simple-page">
+  <section class="panel wide-panel">
+    <p class="eyebrow"><%= selectedPackage.category %> · <%= selectedPackage.duration_days %> days</p>
+    <h1><%= selectedPackage.title %></h1>
+    <p><%= selectedPackage.destination_name %>, <%= selectedPackage.region %></p>
+
+    <div class="detail-layout">
+      <article>
+        <div class="detail-image"></div>
+        <h2>Trip Overview</h2>
+        <p><%= selectedPackage.description %></p>
+        <p><%= selectedPackage.destination_description %></p>
+      </article>
+
+      <aside class="booking-panel">
+        <h2>$<%= Number(selectedPackage.price).toLocaleString() %></h2>
+        <p>Per traveler estimate.</p>
+        <% if (currentUser) { %>
+          <form class="stacked-form" action="/packages/<%= selectedPackage.id %>/book" method="post">
+            <label>
+              Travel date
+              <input type="date" name="travelDate" required>
+            </label>
+            <label>
+              Party size
+              <input type="number" name="partySize" min="1" max="20" value="2" required>
+            </label>
+            <button class="primary-button" type="submit">Request Booking</button>
+          </form>
+        <% } else { %>
+          <a class="primary-button" href="/login">Login to Request Booking</a>
+        <% } %>
+      </aside>
+    </div>
+
+    <div class="section-heading">
+      <h2>Traveler Reviews</h2>
+    </div>
+    <% if (currentUser) { %>
+      <form class="review-form" action="/packages/<%= selectedPackage.id %>/reviews" method="post">
+        <label>
+          Rating
+          <select name="rating" required>
+            <option value="5">5 stars</option>
+            <option value="4">4 stars</option>
+            <option value="3">3 stars</option>
+            <option value="2">2 stars</option>
+            <option value="1">1 star</option>
+          </select>
+        </label>
+        <label>
+          Review
+          <textarea name="comment" rows="4" required></textarea>
+        </label>
+        <button class="secondary-button" type="submit">Save Review</button>
+      </form>
+    <% } %>
+    <div class="card-grid two-col">
+      <% if (!reviews.length) { %>
+        <p>No reviews yet.</p>
+      <% } %>
+      <% reviews.forEach((review) => { %>
+        <article class="content-card">
+          <p class="eyebrow"><%= review.rating %>/5 stars</p>
+          <h3><%= review.first_name %> <%= review.last_name %></h3>
+          <p><%= review.comment %></p>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+</main>
+
+<%- include("../partials/footer") %>

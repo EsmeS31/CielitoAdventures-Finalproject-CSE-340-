@@ -1,0 +1,27 @@
+<%- include("partials/header") %>
+
+<main class="auth-page">
+  <section class="auth-panel">
+    <p class="eyebrow">Questions or custom trips</p>
+    <h1>Contact Cielito</h1>
+    <p>Messages are saved to the database so admins and agents can respond from the dashboard.</p>
+
+    <% if (errors.length) { %>
+      <div class="form-errors">
+        <% errors.forEach((error) => { %>
+          <p><%= error.msg %></p>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <form action="/contact" method="post" class="stacked-form">
+      <label>Name<input name="name" value="<%= formData.name ?? '' %>" required></label>
+      <label>Email<input type="email" name="email" value="<%= formData.email ?? '' %>" required></label>
+      <label>Subject<input name="subject" value="<%= formData.subject ?? '' %>" required></label>
+      <label>Message<textarea name="message" rows="5" required><%= formData.message ?? '' %></textarea></label>
+      <button class="primary-button" type="submit">Send Message</button>
+    </form>
+  </section>
+</main>
+
+<%- include("partials/footer") %>
