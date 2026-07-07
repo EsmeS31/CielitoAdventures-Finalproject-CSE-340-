@@ -1,0 +1,38 @@
+<%- include("../partials/header") %>
+
+<div class="admin-layout">
+  <aside class="side-nav"><p>Management</p><a href="/admin"><span>DB</span>Dashboard</a><a class="selected" href="/admin/bookings"><span>BK</span>Bookings</a><a href="/admin/messages"><span>MS</span>Messages</a></aside>
+  <main class="admin-main">
+    <section class="admin-heading"><div><h1>Bookings</h1><p>Multi-stage workflow management for requested trips.</p></div></section>
+    <section class="table-panel">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Traveler</th><th>Package</th><th>Date</th><th>Status</th><th>Update</th></tr></thead>
+          <tbody>
+            <% bookings.forEach((booking) => { %>
+              <tr>
+                <td><strong><%= booking.first_name %> <%= booking.last_name %></strong><small><%= booking.email %></small></td>
+                <td><%= booking.package_title %></td>
+                <td><%= new Date(booking.travel_date).toLocaleDateString("en-US") %></td>
+                <td><span class="status-badge <%= booking.status %>"><%= booking.status %></span></td>
+                <td>
+                  <form class="inline-controls" action="/admin/bookings/<%= booking.id %>/status" method="post">
+                    <select name="status">
+                      <% ["requested", "confirmed", "completed", "cancelled"].forEach((status) => { %>
+                        <option value="<%= status %>" <%= booking.status === status ? "selected" : "" %>><%= status %></option>
+                      <% }) %>
+                    </select>
+                    <input name="note" placeholder="Optional note">
+                    <button class="secondary-button" type="submit">Save</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<%- include("../partials/footer") %>

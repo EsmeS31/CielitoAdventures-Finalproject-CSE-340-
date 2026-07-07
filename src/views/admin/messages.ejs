@@ -1,0 +1,32 @@
+<%- include("../partials/header") %>
+
+<div class="admin-layout">
+  <aside class="side-nav"><p>Management</p><a href="/admin"><span>DB</span>Dashboard</a><a class="selected" href="/admin/messages"><span>MS</span>Messages</a><a href="/admin/bookings"><span>BK</span>Bookings</a></aside>
+  <main class="admin-main">
+    <section class="admin-heading"><div><h1>Contact Messages</h1><p>Respond to traveler questions and close completed conversations.</p></div></section>
+    <div class="card-grid two-col">
+      <% messages.forEach((message) => { %>
+        <article class="content-card">
+          <p class="eyebrow"><%= message.status %></p>
+          <h3><%= message.subject %></h3>
+          <p><strong><%= message.name %></strong> · <%= message.email %></p>
+          <p><%= message.message %></p>
+          <form class="stacked-form" action="/admin/messages/<%= message.id %>" method="post">
+            <label>
+              Status
+              <select name="status">
+                <option value="received" <%= message.status === "received" ? "selected" : "" %>>Received</option>
+                <option value="replied" <%= message.status === "replied" ? "selected" : "" %>>Replied</option>
+                <option value="closed" <%= message.status === "closed" ? "selected" : "" %>>Closed</option>
+              </select>
+            </label>
+            <label>Response note<textarea name="responseNote" rows="3"><%= message.response_note ?? "" %></textarea></label>
+            <button class="secondary-button" type="submit">Save</button>
+          </form>
+        </article>
+      <% }) %>
+    </div>
+  </main>
+</div>
+
+<%- include("../partials/footer") %>

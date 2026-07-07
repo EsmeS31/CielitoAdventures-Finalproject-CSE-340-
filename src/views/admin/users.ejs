@@ -1,0 +1,42 @@
+<%- include("../partials/header") %>
+
+<div class="admin-layout">
+  <aside class="side-nav">
+    <p>Management</p>
+    <a href="/admin"><span>DB</span>Dashboard</a>
+    <a class="selected" href="/admin/users"><span>US</span>Users</a>
+    <a href="/admin/packages"><span>PK</span>Packages</a>
+    <a href="/admin/bookings"><span>BK</span>Bookings</a>
+  </aside>
+  <main class="admin-main">
+    <section class="admin-heading"><div><h1>Users</h1><p>Admin-only role management.</p></div></section>
+    <section class="table-panel">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Update</th></tr></thead>
+          <tbody>
+            <% users.forEach((user) => { %>
+              <tr>
+                <td><%= user.first_name %> <%= user.last_name %></td>
+                <td><%= user.email %></td>
+                <td><%= user.role %></td>
+                <td>
+                  <form class="inline-controls" action="/admin/users/<%= user.id %>/role" method="post">
+                    <select name="role">
+                      <option value="traveler" <%= user.role === "traveler" ? "selected" : "" %>>Traveler</option>
+                      <option value="agent" <%= user.role === "agent" ? "selected" : "" %>>Agent</option>
+                      <option value="admin" <%= user.role === "admin" ? "selected" : "" %>>Admin</option>
+                    </select>
+                    <button class="secondary-button" type="submit">Save</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<%- include("../partials/footer") %>

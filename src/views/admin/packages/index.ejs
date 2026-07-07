@@ -1,0 +1,52 @@
+<%- include("../../partials/header") %>
+
+<div class="admin-layout">
+  <aside class="side-nav">
+    <p>Management</p>
+    <a href="/admin"><span>DB</span>Dashboard</a>
+    <a class="selected" href="/admin/packages"><span>PK</span>Packages</a>
+    <a href="/admin/bookings"><span>BK</span>Bookings</a>
+    <a href="/admin/reviews"><span>RV</span>Reviews</a>
+    <a href="/admin/messages"><span>MS</span>Messages</a>
+  </aside>
+  <main class="admin-main">
+    <section class="admin-heading">
+      <div>
+        <h1>Packages</h1>
+        <p>Core travel content stored in PostgreSQL and shown on public pages.</p>
+      </div>
+      <% if (currentUser.role === "admin") { %>
+        <a class="primary-button" href="/admin/packages/new">Add Package</a>
+      <% } %>
+    </section>
+    <section class="table-panel">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Package</th><th>Destination</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <% packages.forEach((item) => { %>
+              <tr>
+                <td><strong><%= item.title %></strong><small><%= item.category %> · <%= item.duration_days %> days</small></td>
+                <td><%= item.destination_name ?? "Unassigned" %></td>
+                <td>$<%= Number(item.price).toLocaleString() %></td>
+                <td><span class="status-badge <%= item.status %>"><%= item.status %></span></td>
+                <td>
+                  <% if (currentUser.role === "admin") { %>
+                    <a href="/admin/packages/<%= item.id %>/edit">Edit</a>
+                    <form class="inline-form" action="/admin/packages/<%= item.id %>/delete" method="post">
+                      <button class="link-button" type="submit">Delete</button>
+                    </form>
+                  <% } else { %>
+                    View only
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<%- include("../../partials/footer") %>

@@ -9,6 +9,7 @@
     <a href="/admin/packages"><span>PK</span>Packages</a>
     <a href="/admin/bookings"><span>BK</span>Bookings</a>
     <a href="/admin/reviews"><span>RV</span>Reviews</a>
+    <a href="/admin/messages"><span>MS</span>Messages</a>
   </aside>
 
   <main class="admin-main">
@@ -18,7 +19,9 @@
         <p>Real-time performance and itinerary monitoring.</p>
       </div>
       <div class="admin-actions">
-        <a class="secondary-button" href="/admin/users">Manage Users</a>
+        <% if (currentUser.role === "admin") { %>
+          <a class="secondary-button" href="/admin/users">Manage Users</a>
+        <% } %>
         <a class="primary-button" href="/admin/packages/new">+ Add New Package</a>
       </div>
     </section>

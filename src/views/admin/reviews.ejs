@@ -1,0 +1,29 @@
+<%- include("../partials/header") %>
+
+<div class="admin-layout">
+  <aside class="side-nav"><p>Management</p><a href="/admin"><span>DB</span>Dashboard</a><a class="selected" href="/admin/reviews"><span>RV</span>Reviews</a><a href="/admin/packages"><span>PK</span>Packages</a></aside>
+  <main class="admin-main">
+    <section class="admin-heading"><div><h1>Reviews</h1><p>Moderate user-generated package reviews.</p></div></section>
+    <div class="card-grid two-col">
+      <% reviews.forEach((review) => { %>
+        <article class="content-card">
+          <p class="eyebrow"><%= review.package_title %></p>
+          <h3><%= review.first_name %> <%= review.last_name %> · <%= review.rating %>/5</h3>
+          <p><%= review.comment %></p>
+          <p>Status: <%= review.is_flagged ? "Flagged" : "Visible" %></p>
+          <form class="inline-form" action="/admin/reviews/<%= review.id %>/flag" method="post">
+            <input type="hidden" name="isFlagged" value="<%= review.is_flagged ? "false" : "true" %>">
+            <button class="secondary-button" type="submit"><%= review.is_flagged ? "Unflag" : "Flag" %></button>
+          </form>
+          <% if (currentUser.role === "admin") { %>
+            <form class="inline-form" action="/admin/reviews/<%= review.id %>/delete" method="post">
+              <button class="danger-button" type="submit">Delete</button>
+            </form>
+          <% } %>
+        </article>
+      <% }) %>
+    </div>
+  </main>
+</div>
+
+<%- include("../partials/footer") %>
