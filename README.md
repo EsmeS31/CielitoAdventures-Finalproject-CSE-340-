@@ -94,13 +94,19 @@ More setup details are in [`docs/postgresql-setup.md`](docs/postgresql-setup.md)
    npm run db:setup
    ```
 
-5. Start development:
+5. Confirm the app can connect to PostgreSQL:
+
+   ```bash
+   npm run db:check
+   ```
+
+6. Start development:
 
    ```bash
    npm run dev
    ```
 
-6. Open:
+7. Open:
 
    ```text
    http://localhost:3000
@@ -122,6 +128,7 @@ After deploying, open the Render Shell and run:
 
 ```bash
 npm run db:setup
+npm run db:check
 ```
 
 That creates the tables and seeds the test accounts.

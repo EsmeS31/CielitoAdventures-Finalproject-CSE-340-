@@ -35,7 +35,13 @@ DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
    npm run db:setup
    ```
 
-6. Start the app:
+6. Confirm the connection:
+
+   ```bash
+   npm run db:check
+   ```
+
+7. Start the app:
 
    ```bash
    npm run dev
@@ -58,6 +64,7 @@ DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
 
    ```bash
    npm run db:setup
+   npm run db:check
    ```
 
 After that, login with the seeded accounts listed in the README.

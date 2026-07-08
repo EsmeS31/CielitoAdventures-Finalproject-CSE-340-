@@ -20,10 +20,13 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PgSession = pgSession(session);
-const hasDatabase = Boolean(process.env.DATABASE_URL);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
 
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan("dev"));
@@ -33,12 +36,10 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use(
   session({
-    store: hasDatabase
-      ? new PgSession({
-          pool,
-          tableName: "session"
-        })
-      : undefined,
+    store: new PgSession({
+      pool,
+      tableName: "session"
+    }),
     name: "cielito.sid",
     secret: process.env.SESSION_SECRET ?? "dev-secret-change-me",
     resave: false,
