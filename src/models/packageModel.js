@@ -74,6 +74,41 @@ export async function listDestinations() {
   return result.rows;
 }
 
+export async function getDestinationById(id) {
+  const result = await query("SELECT * FROM destinations WHERE id = $1", [id]);
+  return result.rows[0] ?? null;
+}
+
+export async function createDestination(data) {
+  const result = await query(
+    `INSERT INTO destinations (name, region, description, image_url)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [data.name, data.region, data.description, data.imageUrl || null]
+  );
+
+  return result.rows[0];
+}
+
+export async function updateDestination(id, data) {
+  const result = await query(
+    `UPDATE destinations
+     SET name = $1,
+         region = $2,
+         description = $3,
+         image_url = $4
+     WHERE id = $5
+     RETURNING *`,
+    [data.name, data.region, data.description, data.imageUrl || null, id]
+  );
+
+  return result.rows[0] ?? null;
+}
+
+export async function deleteDestination(id) {
+  await query("DELETE FROM destinations WHERE id = $1", [id]);
+}
+
 export async function createPackage(data, createdBy) {
   const result = await query(
     `INSERT INTO packages

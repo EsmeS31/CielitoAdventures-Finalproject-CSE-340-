@@ -1,0 +1,26 @@
+<%- include("../../partials/header") %>
+
+<main class="auth-page">
+  <section class="auth-panel">
+    <p class="eyebrow">Admin destination management</p>
+    <h1><%= title %></h1>
+
+    <% if (errors.length) { %>
+      <div class="form-errors">
+        <% errors.forEach((error) => { %>
+          <p><%= error.msg %></p>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <form class="stacked-form" action="<%= action %>" method="post">
+      <label>Name<input name="name" value="<%= formData.name %>" required></label>
+      <label>Region<input name="region" value="<%= formData.region %>" required></label>
+      <label>Image URL<input type="url" name="imageUrl" value="<%= formData.imageUrl %>"></label>
+      <label>Description<textarea name="description" rows="6" required><%= formData.description %></textarea></label>
+      <button class="primary-button" type="submit"><%= submitLabel %></button>
+    </form>
+  </section>
+</main>
+
+<%- include("../../partials/footer") %>

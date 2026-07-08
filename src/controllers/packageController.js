@@ -1,12 +1,16 @@
 import { validationResult } from "express-validator";
 import {
+  createDestination,
   createPackage,
+  deleteDestination,
   deletePackage,
+  getDestinationById,
   getPackageById,
   getPackageReviews,
   listAllPackages,
   listDestinations,
   listPublicPackages,
+  updateDestination,
   updatePackage
 } from "../models/packageModel.js";
 import { createBooking } from "../models/bookingModel.js";
@@ -21,6 +25,15 @@ function packageFormData(body = {}) {
     price: body.price ?? "",
     description: body.description ?? "",
     status: body.status ?? "draft"
+  };
+}
+
+function destinationFormData(body = {}) {
+  return {
+    name: body.name ?? "",
+    region: body.region ?? "",
+    description: body.description ?? "",
+    imageUrl: body.imageUrl ?? ""
   };
 }
 
@@ -123,6 +136,133 @@ export async function renderNewPackage(req, res, next) {
       action: "/admin/packages",
       submitLabel: "Create Package"
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function renderAdminDestinations(req, res, next) {
+  try {
+    const destinations = await listDestinations();
+    res.render("admin/destinations/index", { title: "Admin Destinations", destinations });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function renderNewDestination(req, res) {
+  res.render("admin/destinations/form", {
+    title: "New Destination",
+    formData: destinationFormData(),
+    errors: [],
+    action: "/admin/destinations",
+    submitLabel: "Create Destination"
+  });
+}
+
+export async function createAdminDestination(req, res, next) {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/destinations/form", {
+      title: "New Destination",
+      formData: destinationFormData(req.body),
+      errors: errors.array(),
+      action: "/admin/destinations",
+      submitLabel: "Create Destination"
+    });
+  }
+
+  try {
+    await createDestination(destinationFormData(req.body));
+    req.session.flash = { type: "success", message: "Destination created." };
+    return res.redirect("/admin/destinations");
+  } catch (error) {
+    if (error.code === "23505") {
+      return res.status(409).render("admin/destinations/form", {
+        title: "New Destination",
+        formData: destinationFormData(req.body),
+        errors: [{ msg: "A destination with that name and region already exists." }],
+        action: "/admin/destinations",
+        submitLabel: "Create Destination"
+      });
+    }
+
+    return next(error);
+  }
+}
+
+export async function renderEditDestination(req, res, next) {
+  try {
+    const destination = await getDestinationById(req.params.id);
+
+    if (!destination) {
+      const error = new Error("Destination not found.");
+      error.status = 404;
+      throw error;
+    }
+
+    res.render("admin/destinations/form", {
+      title: "Edit Destination",
+      formData: {
+        name: destination.name,
+        region: destination.region,
+        description: destination.description,
+        imageUrl: destination.image_url ?? ""
+      },
+      errors: [],
+      action: `/admin/destinations/${destination.id}`,
+      submitLabel: "Save Destination"
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateAdminDestination(req, res, next) {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/destinations/form", {
+      title: "Edit Destination",
+      formData: destinationFormData(req.body),
+      errors: errors.array(),
+      action: `/admin/destinations/${req.params.id}`,
+      submitLabel: "Save Destination"
+    });
+  }
+
+  try {
+    const destination = await updateDestination(req.params.id, destinationFormData(req.body));
+
+    if (!destination) {
+      const error = new Error("Destination not found.");
+      error.status = 404;
+      throw error;
+    }
+
+    req.session.flash = { type: "success", message: "Destination updated." };
+    return res.redirect("/admin/destinations");
+  } catch (error) {
+    if (error.code === "23505") {
+      return res.status(409).render("admin/destinations/form", {
+        title: "Edit Destination",
+        formData: destinationFormData(req.body),
+        errors: [{ msg: "A destination with that name and region already exists." }],
+        action: `/admin/destinations/${req.params.id}`,
+        submitLabel: "Save Destination"
+      });
+    }
+
+    return next(error);
+  }
+}
+
+export async function deleteAdminDestination(req, res, next) {
+  try {
+    await deleteDestination(req.params.id);
+    req.session.flash = { type: "success", message: "Destination deleted. Related packages are now unassigned." };
+    return res.redirect("/admin/destinations");
   } catch (error) {
     next(error);
   }

@@ -21,10 +21,10 @@ tulum AS (
   RETURNING id
 )
 INSERT INTO packages (destination_id, title, category, duration_days, price, description, status, created_by)
-SELECT oaxaca.id, 'Oaxaca Culinary Tour', 'Boutique', 7, 1350.00, 'A week of markets, cooking classes, and village food traditions.', 'active', admin_user.id
+SELECT oaxaca.id, 'Oaxaca Culinary Tour', 'Boutique', 7, 1350.00, 'A week of markets, cooking classes, and village food traditions.', 'active'::package_status, admin_user.id
 FROM oaxaca, admin_user
 UNION ALL
-SELECT tulum.id, 'Tulum Beach Wellness', 'Eco-Luxury', 5, 1800.00, 'A coastal reset with spa time, cenote swims, and mindful dining.', 'active', admin_user.id
+SELECT tulum.id, 'Tulum Beach Wellness', 'Eco-Luxury', 5, 1800.00, 'A coastal reset with spa time, cenote swims, and mindful dining.', 'active'::package_status, admin_user.id
 FROM tulum, admin_user
 ON CONFLICT (title) DO UPDATE SET
   destination_id = EXCLUDED.destination_id,
@@ -35,7 +35,7 @@ ON CONFLICT (title) DO UPDATE SET
   status = EXCLUDED.status;
 
 INSERT INTO bookings (user_id, package_id, status, travel_date, party_size, total_price)
-SELECT u.id, p.id, 'confirmed', CURRENT_DATE + INTERVAL '30 days', 2, p.price * 2
+SELECT u.id, p.id, 'confirmed'::booking_status, CURRENT_DATE + INTERVAL '30 days', 2, p.price * 2
 FROM users u
 JOIN packages p ON p.title = 'Oaxaca Culinary Tour'
 WHERE u.email = 'traveler@cielito.test'
@@ -49,5 +49,5 @@ WHERE u.email = 'traveler@cielito.test'
 ON CONFLICT (user_id, package_id) DO NOTHING;
 
 INSERT INTO contact_messages (name, email, subject, message, status)
-VALUES ('Lucia Lopez', 'lucia@example.com', 'Custom family trip', 'I would like help planning a custom family trip in Yucatan.', 'received')
+VALUES ('Lucia Lopez', 'lucia@example.com', 'Custom family trip', 'I would like help planning a custom family trip in Yucatan.', 'received'::contact_status)
 ON CONFLICT DO NOTHING;
