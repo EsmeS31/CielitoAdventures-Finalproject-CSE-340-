@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { renderBookingDetail, renderTravelerDashboard, deleteTravelerReview } from "../controllers/dashboardController.js";
+import {
+  deleteTravelerReview,
+  renderBookingDetail,
+  renderTravelerDashboard,
+  updateTravelerReview
+} from "../controllers/dashboardController.js";
 import { renderContact, submitContact } from "../controllers/contactController.js";
 import { renderAdminPreview, renderHome } from "../controllers/siteController.js";
 import { requireAuth } from "../middleware/authMiddleware.js";
@@ -47,6 +52,15 @@ router.post(
 );
 router.get("/dashboard", requireAuth, renderTravelerDashboard);
 router.get("/dashboard/bookings/:id", requireAuth, renderBookingDetail);
+router.post(
+  "/dashboard/reviews/:id",
+  requireAuth,
+  [
+    body("rating").isInt({ min: 1, max: 5 }).withMessage("Rating must be between 1 and 5."),
+    body("comment").trim().isLength({ min: 8 }).withMessage("Review must be at least 8 characters.").escape()
+  ],
+  updateTravelerReview
+);
 router.post("/dashboard/reviews/:id/delete", requireAuth, deleteTravelerReview);
 
 if (process.env.NODE_ENV !== "production") {

@@ -17,7 +17,7 @@ Cielito Adventures is a server-rendered travel agency web application for travel
 - Public package browsing with filtering and dynamic package detail pages
 - Register, login, logout, and protected routes
 - Three roles: admin, agent, traveler
-- Traveler dashboard with booking requests, status history, and review management
+- Traveler dashboard with booking requests, status history, and review create/edit/delete management
 - Multi-stage booking workflow: requested, confirmed, completed, cancelled
 - Admin dashboard with operational stats
 - Admin package CRUD for core site content
@@ -50,7 +50,7 @@ For final submission, export an ERD image from pgAdmin using the same table rela
 
 - **Admin/Owner**: Can manage users and roles, add/edit/delete packages, update bookings, moderate reviews, view messages, and access all dashboard data.
 - **Agent**: Can view operations, update booking statuses, moderate reviews, and respond to contact messages. Agents cannot manage users or delete core package content.
-- **Traveler**: Can browse packages, request bookings, view their booking status history, create reviews, delete their own reviews, and send contact messages.
+- **Traveler**: Can browse packages, request bookings, view their booking status history, create/edit/delete their own reviews, and send contact messages.
 
 ## Test Accounts
 

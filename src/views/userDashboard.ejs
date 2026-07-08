@@ -50,6 +50,19 @@
           <p class="eyebrow"><%= review.package_title %></p>
           <h3><%= review.rating %>/5 stars</h3>
           <p><%= review.comment %></p>
+          <form class="review-form" action="/dashboard/reviews/<%= review.id %>" method="post">
+            <label>Rating
+              <select name="rating">
+                <% [5, 4, 3, 2, 1].forEach((rating) => { %>
+                  <option value="<%= rating %>" <%= Number(review.rating) === rating ? "selected" : "" %>><%= rating %> stars</option>
+                <% }) %>
+              </select>
+            </label>
+            <label>Review
+              <textarea name="comment" rows="4" required><%= review.comment %></textarea>
+            </label>
+            <button class="primary-button" type="submit">Save Review</button>
+          </form>
           <form action="/dashboard/reviews/<%= review.id %>/delete" method="post">
             <button class="danger-button" type="submit">Delete Review</button>
           </form>

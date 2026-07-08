@@ -42,6 +42,18 @@ export async function deleteOwnReview(reviewId, userId) {
   await query("DELETE FROM reviews WHERE id = $1 AND user_id = $2", [reviewId, userId]);
 }
 
+export async function updateOwnReview(reviewId, userId, { rating, comment }) {
+  const result = await query(
+    `UPDATE reviews
+     SET rating = $1, comment = $2, is_flagged = false, updated_at = now()
+     WHERE id = $3 AND user_id = $4
+     RETURNING *`,
+    [Number(rating), comment, reviewId, userId]
+  );
+
+  return result.rows[0] ?? null;
+}
+
 export async function deleteReview(reviewId) {
   await query("DELETE FROM reviews WHERE id = $1", [reviewId]);
 }
