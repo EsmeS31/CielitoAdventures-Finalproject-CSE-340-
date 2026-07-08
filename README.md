@@ -68,6 +68,7 @@ The app connects to PostgreSQL through this environment variable:
 
 ```bash
 DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
+DATABASE_SSL=false
 ```
 
 More setup details are in [`docs/postgresql-setup.md`](docs/postgresql-setup.md).

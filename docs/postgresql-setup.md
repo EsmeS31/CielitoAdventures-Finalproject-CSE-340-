@@ -8,6 +8,12 @@ DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
 
 `src/db/pool.js` reads that value and creates a shared `pg.Pool`. Every model file uses parameterized queries through that pool, which protects the project from SQL injection.
 
+If your database host requires SSL locally, add this to `.env`:
+
+```bash
+DATABASE_SSL=true
+```
+
 ## Local Setup
 
 1. Install PostgreSQL locally.
@@ -27,6 +33,7 @@ DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
 
    ```bash
    DATABASE_URL=postgres://postgres:postgres@localhost:5432/cielito_adventures
+   DATABASE_SSL=false
    ```
 
 5. Run the schema and seed data:
