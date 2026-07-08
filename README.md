@@ -20,6 +20,7 @@ Cielito Adventures is a server-rendered travel agency web application for travel
 - Traveler dashboard with booking requests, status history, and review create/edit/delete management
 - Multi-stage booking workflow: requested, confirmed, completed, cancelled
 - Admin dashboard with operational stats
+- Admin destination CRUD for package locations
 - Admin package CRUD for core site content
 - Admin user role management
 - Agent/admin booking status updates with workflow history
@@ -145,6 +146,5 @@ That creates the tables and seeds the test accounts.
 
 ## Known Limitations
 
-- Destination CRUD is represented in the schema and package form relationship, but a dedicated destination management screen is not built yet.
 - Payment checkout is intentionally out of scope; bookings are requests, not paid orders.
 - The README links to an ERD reference, but a pgAdmin-exported ERD image still needs to be added if required by the instructor.

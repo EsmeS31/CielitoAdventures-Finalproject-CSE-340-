@@ -15,17 +15,62 @@ import {
 import { requireAuth, requireRole } from "../middleware/authMiddleware.js";
 import {
   createAdminPackage,
+  createAdminDestination,
+  deleteAdminDestination,
   deleteAdminPackage,
+  renderAdminDestinations,
   renderAdminPackages,
+  renderEditDestination,
   renderEditPackage,
+  renderNewDestination,
   renderNewPackage,
+  updateAdminDestination,
   updateAdminPackage
 } from "../controllers/packageController.js";
 
 const router = Router();
+const imageUrlValidator = body("imageUrl")
+  .optional({ checkFalsy: true })
+  .trim()
+  .custom((value) => {
+    if (value.startsWith("/")) return true;
+
+    try {
+      const url = new URL(value);
+      return ["http:", "https:"].includes(url.protocol);
+    } catch {
+      throw new Error("Use a valid image URL or site image path.");
+    }
+  });
 
 router.use(requireAuth, requireRole("admin", "agent"));
 router.get("/", renderDashboard);
+router.get("/destinations", renderAdminDestinations);
+router.get("/destinations/new", requireRole("admin"), renderNewDestination);
+router.post(
+  "/destinations",
+  requireRole("admin"),
+  [
+    body("name").trim().notEmpty().withMessage("Name is required.").escape(),
+    body("region").trim().notEmpty().withMessage("Region is required.").escape(),
+    body("description").trim().isLength({ min: 20 }).withMessage("Description must be at least 20 characters.").escape(),
+    imageUrlValidator
+  ],
+  createAdminDestination
+);
+router.get("/destinations/:id/edit", requireRole("admin"), renderEditDestination);
+router.post(
+  "/destinations/:id",
+  requireRole("admin"),
+  [
+    body("name").trim().notEmpty().withMessage("Name is required.").escape(),
+    body("region").trim().notEmpty().withMessage("Region is required.").escape(),
+    body("description").trim().isLength({ min: 20 }).withMessage("Description must be at least 20 characters.").escape(),
+    imageUrlValidator
+  ],
+  updateAdminDestination
+);
+router.post("/destinations/:id/delete", requireRole("admin"), deleteAdminDestination);
 router.get("/packages", renderAdminPackages);
 router.get("/packages/new", requireRole("admin"), renderNewPackage);
 router.post(

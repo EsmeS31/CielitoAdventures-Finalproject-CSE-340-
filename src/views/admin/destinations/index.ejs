@@ -1,0 +1,73 @@
+<%- include("../../partials/header") %>
+
+<div class="admin-layout">
+  <aside class="side-nav">
+    <p>Management</p>
+    <a href="/admin"><span>DB</span>Dashboard</a>
+    <a class="selected" href="/admin/destinations"><span>DE</span>Destinations</a>
+    <a href="/admin/packages"><span>PK</span>Packages</a>
+    <a href="/admin/bookings"><span>BK</span>Bookings</a>
+    <a href="/admin/reviews"><span>RV</span>Reviews</a>
+    <a href="/admin/messages"><span>MS</span>Messages</a>
+  </aside>
+  <main class="admin-main">
+    <section class="admin-heading">
+      <div>
+        <h1>Destinations</h1>
+        <p>Manage the places that organize public travel packages.</p>
+      </div>
+      <% if (currentUser.role === "admin") { %>
+        <a class="primary-button" href="/admin/destinations/new">Add Destination</a>
+      <% } %>
+    </section>
+
+    <section class="table-panel">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Destination</th>
+              <th>Region</th>
+              <th>Description</th>
+              <th>Image</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!destinations.length) { %>
+              <tr>
+                <td colspan="5">No destinations yet. Add destinations before creating public packages.</td>
+              </tr>
+            <% } %>
+            <% destinations.forEach((destination) => { %>
+              <tr>
+                <td><strong><%= destination.name %></strong></td>
+                <td><%= destination.region %></td>
+                <td><%= destination.description %></td>
+                <td>
+                  <% if (destination.image_url) { %>
+                    <a href="<%= destination.image_url %>">View image</a>
+                  <% } else { %>
+                    No image
+                  <% } %>
+                </td>
+                <td>
+                  <% if (currentUser.role === "admin") { %>
+                    <a href="/admin/destinations/<%= destination.id %>/edit">Edit</a>
+                    <form class="inline-form" action="/admin/destinations/<%= destination.id %>/delete" method="post">
+                      <button class="link-button" type="submit">Delete</button>
+                    </form>
+                  <% } else { %>
+                    View only
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<%- include("../../partials/footer") %>
