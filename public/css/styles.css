@@ -608,7 +608,7 @@ textarea:focus {
   border-radius: var(--radius);
   background:
     linear-gradient(135deg, rgba(158, 61, 0, 0.45), rgba(50, 98, 134, 0.4)),
-    url("https://unsplash.com/photos/a-large-building-with-a-dome-and-a-courtyard-with-people-walking-around-kO-USq1pmR4");
+    url("https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?auto=format&fit=crop&w=1200&q=80");
   background-position: center;
   background-size: cover;
 }
