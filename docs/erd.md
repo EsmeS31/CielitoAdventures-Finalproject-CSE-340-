@@ -9,6 +9,7 @@ erDiagram
   USERS ||--o{ CONTACT_MESSAGES : sends
   USERS ||--o{ BOOKING_STATUS_HISTORY : changes
   DESTINATIONS ||--o{ PACKAGES : contains
+  PACKAGES ||--o{ GUIDED_TOURS_AND_TICKETS : includes
   PACKAGES ||--o{ BOOKINGS : receives
   PACKAGES ||--o{ REVIEWS : receives
   BOOKINGS ||--o{ BOOKING_STATUS_HISTORY : tracks
@@ -33,8 +34,17 @@ erDiagram
     uuid id PK
     uuid destination_id FK
     varchar title UK
+    text key_highlights
+    varchar accommodation
+    varchar transportation
     numeric price
     package_status status
+  }
+
+  GUIDED_TOURS_AND_TICKETS {
+    uuid id PK
+    uuid package_id FK
+    text description
   }
 
   BOOKINGS {

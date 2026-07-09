@@ -6,6 +6,7 @@ import {
   deletePackage,
   getDestinationById,
   getPackageById,
+  getPackageInclusions,
   getPackageReviews,
   listAllPackages,
   listDestinations,
@@ -21,6 +22,9 @@ function packageFormData(body = {}) {
     destinationId: body.destinationId ?? "",
     title: body.title ?? "",
     category: body.category ?? "",
+    keyHighlights: body.keyHighlights ?? "",
+    accommodation: body.accommodation ?? "",
+    transportation: body.transportation ?? "",
     durationDays: body.durationDays ?? "",
     price: body.price ?? "",
     description: body.description ?? "",
@@ -60,10 +64,14 @@ export async function renderPackageDetail(req, res, next) {
       throw error;
     }
 
-    const reviews = await getPackageReviews(req.params.id);
+    const [reviews, inclusions] = await Promise.all([
+      getPackageReviews(req.params.id),
+      getPackageInclusions(req.params.id)
+    ]);
     res.render("packages/detail", {
       title: selectedPackage.title,
       selectedPackage,
+      inclusions,
       reviews,
       errors: []
     });
@@ -313,6 +321,9 @@ export async function renderEditPackage(req, res, next) {
         destinationId: selectedPackage.destination_id ?? "",
         title: selectedPackage.title,
         category: selectedPackage.category,
+        keyHighlights: selectedPackage.key_highlights ?? "",
+        accommodation: selectedPackage.accommodation ?? "",
+        transportation: selectedPackage.transportation ?? "",
         durationDays: selectedPackage.duration_days,
         price: selectedPackage.price,
         description: selectedPackage.description,

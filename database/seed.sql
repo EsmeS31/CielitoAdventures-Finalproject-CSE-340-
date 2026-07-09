@@ -20,19 +20,70 @@ tulum AS (
   ON CONFLICT (name, region) DO UPDATE SET description = EXCLUDED.description
   RETURNING id
 )
-INSERT INTO packages (destination_id, title, category, duration_days, price, description, status, created_by)
-SELECT oaxaca.id, 'Oaxaca Culinary Tour', 'Boutique', 7, 1350.00, 'A week of markets, cooking classes, and village food traditions.', 'active'::package_status, admin_user.id
+INSERT INTO packages (
+  destination_id,
+  title,
+  category,
+  key_highlights,
+  accommodation,
+  transportation,
+  duration_days,
+  price,
+  description,
+  status,
+  created_by
+)
+SELECT
+  oaxaca.id,
+  'Oaxaca Culinary Tour',
+  'Boutique',
+  'Cooking class, artisan market visit, mezcal tasting, and Zapotec village food traditions.',
+  'Locally owned boutique hotel near the historic center.',
+  'Private airport transfer and guided ground transportation between activities.',
+  7,
+  1350.00,
+  'A week of markets, cooking classes, and village food traditions.',
+  'active'::package_status,
+  admin_user.id
 FROM oaxaca, admin_user
 UNION ALL
-SELECT tulum.id, 'Tulum Beach Wellness', 'Eco-Luxury', 5, 1800.00, 'A coastal reset with spa time, cenote swims, and mindful dining.', 'active'::package_status, admin_user.id
+SELECT
+  tulum.id,
+  'Tulum Beach Wellness',
+  'Eco-Luxury',
+  'Cenote swim, beach yoga, spa afternoon, and guided ruins visit.',
+  'Eco-luxury beach stay with wellness-focused amenities.',
+  'Shared shuttle service plus local transfers to planned activities.',
+  5,
+  1800.00,
+  'A coastal reset with spa time, cenote swims, and mindful dining.',
+  'active'::package_status,
+  admin_user.id
 FROM tulum, admin_user
 ON CONFLICT (title) DO UPDATE SET
   destination_id = EXCLUDED.destination_id,
   category = EXCLUDED.category,
+  key_highlights = EXCLUDED.key_highlights,
+  accommodation = EXCLUDED.accommodation,
+  transportation = EXCLUDED.transportation,
   duration_days = EXCLUDED.duration_days,
   price = EXCLUDED.price,
   description = EXCLUDED.description,
   status = EXCLUDED.status;
+
+INSERT INTO guided_tours_and_tickets (package_id, description)
+SELECT p.id, inclusion.description
+FROM packages p
+JOIN (
+  VALUES
+    ('Oaxaca Culinary Tour', 'Guided visit to Mercado Benito Juarez with tastings.'),
+    ('Oaxaca Culinary Tour', 'Hands-on cooking class with a local chef.'),
+    ('Oaxaca Culinary Tour', 'Reserved mezcal tasting and distillery tour.'),
+    ('Tulum Beach Wellness', 'Guided Tulum ruins entrance ticket and tour.'),
+    ('Tulum Beach Wellness', 'Cenote entrance ticket with local guide.'),
+    ('Tulum Beach Wellness', 'Beach yoga session and wellness workshop.')
+) AS inclusion(package_title, description) ON inclusion.package_title = p.title
+ON CONFLICT (package_id, description) DO NOTHING;
 
 INSERT INTO bookings (user_id, package_id, status, travel_date, party_size, total_price)
 SELECT u.id, p.id, 'confirmed'::booking_status, CURRENT_DATE + INTERVAL '30 days', 2, p.price * 2
