@@ -12,6 +12,35 @@
         <h2>Trip Overview</h2>
         <p><%= selectedPackage.description %></p>
         <p><%= selectedPackage.destination_description %></p>
+        <% if (selectedPackage.key_highlights) { %>
+          <h2>Key Highlights</h2>
+          <p><%= selectedPackage.key_highlights %></p>
+        <% } %>
+        <h2>Included Travel Details</h2>
+        <div class="card-grid two-col">
+          <% if (selectedPackage.accommodation) { %>
+            <article class="content-card">
+              <p class="eyebrow">Accommodation</p>
+              <p><%= selectedPackage.accommodation %></p>
+            </article>
+          <% } %>
+          <% if (selectedPackage.transportation) { %>
+            <article class="content-card">
+              <p class="eyebrow">Transportation</p>
+              <p><%= selectedPackage.transportation %></p>
+            </article>
+          <% } %>
+        </div>
+        <% if (inclusions.length) { %>
+          <h2>Guided Tours and Tickets</h2>
+          <div class="card-grid two-col">
+            <% inclusions.forEach((inclusion) => { %>
+              <article class="content-card">
+                <p><%= inclusion.description %></p>
+              </article>
+            <% }) %>
+          </div>
+        <% } %>
       </article>
 
       <aside class="booking-panel">

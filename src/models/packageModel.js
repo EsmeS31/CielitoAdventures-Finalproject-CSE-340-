@@ -69,6 +69,18 @@ export async function getPackageReviews(packageId) {
   return result.rows;
 }
 
+export async function getPackageInclusions(packageId) {
+  const result = await query(
+    `SELECT *
+     FROM guided_tours_and_tickets
+     WHERE package_id = $1
+     ORDER BY created_at ASC`,
+    [packageId]
+  );
+
+  return result.rows;
+}
+
 export async function listDestinations() {
   const result = await query("SELECT * FROM destinations ORDER BY name ASC");
   return result.rows;
@@ -112,13 +124,16 @@ export async function deleteDestination(id) {
 export async function createPackage(data, createdBy) {
   const result = await query(
     `INSERT INTO packages
-       (destination_id, title, category, duration_days, price, description, status, created_by)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       (destination_id, title, category, key_highlights, accommodation, transportation, duration_days, price, description, status, created_by)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      RETURNING *`,
     [
       data.destinationId || null,
       data.title,
       data.category,
+      data.keyHighlights || null,
+      data.accommodation || null,
+      data.transportation || null,
       Number(data.durationDays),
       Number(data.price),
       data.description,
@@ -136,17 +151,23 @@ export async function updatePackage(id, data) {
      SET destination_id = $1,
          title = $2,
          category = $3,
-         duration_days = $4,
-         price = $5,
-         description = $6,
-         status = $7,
+         key_highlights = $4,
+         accommodation = $5,
+         transportation = $6,
+         duration_days = $7,
+         price = $8,
+         description = $9,
+         status = $10,
          updated_at = now()
-     WHERE id = $8
+     WHERE id = $11
      RETURNING *`,
     [
       data.destinationId || null,
       data.title,
       data.category,
+      data.keyHighlights || null,
+      data.accommodation || null,
+      data.transportation || null,
       Number(data.durationDays),
       Number(data.price),
       data.description,

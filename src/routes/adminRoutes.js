@@ -79,6 +79,9 @@ router.post(
   [
     body("title").trim().notEmpty().withMessage("Title is required.").escape(),
     body("category").trim().notEmpty().withMessage("Category is required.").escape(),
+    body("keyHighlights").trim().isLength({ min: 10 }).withMessage("Key highlights must be at least 10 characters.").escape(),
+    body("accommodation").trim().isLength({ min: 5 }).withMessage("Accommodation must be at least 5 characters.").escape(),
+    body("transportation").trim().isLength({ min: 5 }).withMessage("Transportation must be at least 5 characters.").escape(),
     body("durationDays").isInt({ min: 1 }).withMessage("Duration must be at least 1 day."),
     body("price").isFloat({ min: 0 }).withMessage("Price must be 0 or greater."),
     body("description").trim().isLength({ min: 20 }).withMessage("Description must be at least 20 characters.").escape(),
@@ -93,6 +96,9 @@ router.post(
   [
     body("title").trim().notEmpty().withMessage("Title is required.").escape(),
     body("category").trim().notEmpty().withMessage("Category is required.").escape(),
+    body("keyHighlights").trim().isLength({ min: 10 }).withMessage("Key highlights must be at least 10 characters.").escape(),
+    body("accommodation").trim().isLength({ min: 5 }).withMessage("Accommodation must be at least 5 characters.").escape(),
+    body("transportation").trim().isLength({ min: 5 }).withMessage("Transportation must be at least 5 characters.").escape(),
     body("durationDays").isInt({ min: 1 }).withMessage("Duration must be at least 1 day."),
     body("price").isFloat({ min: 0 }).withMessage("Price must be 0 or greater."),
     body("description").trim().isLength({ min: 20 }).withMessage("Description must be at least 20 characters.").escape(),

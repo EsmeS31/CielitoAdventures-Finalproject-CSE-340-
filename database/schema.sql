@@ -60,6 +60,9 @@ CREATE TABLE IF NOT EXISTS packages (
   destination_id uuid REFERENCES destinations(id) ON DELETE SET NULL,
   title varchar(160) NOT NULL,
   category varchar(80) NOT NULL,
+  key_highlights text,
+  accommodation varchar(255),
+  transportation varchar(255),
   duration_days integer NOT NULL CHECK (duration_days > 0),
   price numeric(10, 2) NOT NULL CHECK (price >= 0),
   description text NOT NULL,
@@ -71,6 +74,19 @@ CREATE TABLE IF NOT EXISTS packages (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (title)
+);
+
+ALTER TABLE packages
+  ADD COLUMN IF NOT EXISTS key_highlights text,
+  ADD COLUMN IF NOT EXISTS accommodation varchar(255),
+  ADD COLUMN IF NOT EXISTS transportation varchar(255);
+
+CREATE TABLE IF NOT EXISTS guided_tours_and_tickets (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  package_id uuid NOT NULL REFERENCES packages(id) ON DELETE CASCADE,
+  description text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (package_id, description)
 );
 
 CREATE TABLE IF NOT EXISTS bookings (
@@ -131,6 +147,7 @@ CREATE TABLE IF NOT EXISTS guided_tours_and_tickets (
 
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_packages_status ON packages(status);
+CREATE INDEX IF NOT EXISTS idx_guided_tours_package_id ON guided_tours_and_tickets(package_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_user_id ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
 CREATE INDEX IF NOT EXISTS idx_reviews_package_id ON reviews(package_id);

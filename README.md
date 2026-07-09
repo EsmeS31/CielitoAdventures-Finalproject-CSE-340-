@@ -37,6 +37,7 @@ Tables:
 - `users`
 - `destinations`
 - `packages`
+- `guided_tours_and_tickets`
 - `bookings`
 - `booking_status_history`
 - `reviews`
