@@ -1,151 +1,81 @@
 # Cielito Adventures
 
-Cielito Adventures is a server-rendered travel agency web application for travelers who want curated, less typical Mexico travel experiences. Visitors can browse travel packages, create an account, request bookings, track booking status, submit reviews, and send contact messages. Admins and agents can manage operational data from protected dashboards.
+Cielito Adventures is a server-side rendered travel agency application built with Node.js, Express.js, EJS, and PostgreSQL. It allows visitors to browse travel packages, create accounts, request bookings, submit reviews, and send contact messages. Admins and agents can manage destinations, packages, bookings, reviews, and users from protected dashboards.
 
 ## Technology Stack
-
 - Node.js and Express.js
-- ESM imports/exports through `"type": "module"`
-- EJS server-rendered views
+- ESM via `"type": "module"`
+- EJS for server-side rendering
 - PostgreSQL with normalized relational tables
-- `express-session` with PostgreSQL session storage
-- `bcrypt` password hashing
+- `express-session` for session-based authentication
+- `bcrypt` for password hashing
 - Render deployment target
 
 ## Major Features
-
-- Public package browsing with filtering and dynamic package detail pages
-- Register, login, logout, and protected routes
-- Three roles: admin, agent, traveler
-- Traveler dashboard with booking requests, status history, and review create/edit/delete management
+- Public browsing of travel packages and package details
+- User registration, login, logout, and protected routes
+- Three user roles: admin, agent, and traveler
+- Traveler dashboard for bookings, status tracking, and review management
 - Multi-stage booking workflow: requested, confirmed, completed, cancelled
-- Admin dashboard with operational stats
-- Admin destination CRUD for package locations
-- Admin package CRUD for core site content
+- Admin dashboard with operational data
+- Admin CRUD for destinations and packages
 - Admin user role management
-- Agent/admin booking status updates with workflow history
-- Review moderation through flag/delete actions
-- Contact form saved to the database with admin response status
+- Review moderation and contact message management
 - Parameterized PostgreSQL queries and server-side form validation
 
 ## Database Schema
+The database schema is defined in [`database/schema.sql`](database/schema.sql), and the seed data is in [`database/seed.sql`](database/seed.sql).
 
-The SQL schema is in [`database/schema.sql`](database/schema.sql).
+Tables include:
+- `users`, `destinations`, `packages`, `bookings`, `booking_status_history`, `reviews`, `contact_messages`, `session`
 
-Tables:
-
-- `users`
-- `destinations`
-- `packages`
-- `guided_tours_and_tickets`
-- `bookings`
-- `booking_status_history`
-- `reviews`
-- `contact_messages`
-- `session`
-
-ERD reference: [`docs/erd.md`](docs/erd.md)
-
-For final submission, export an ERD image from pgAdmin using the same table relationships and add it to this README if your instructor requires the pgAdmin export specifically.
+ERD (required)
+- Export an ERD image from pgAdmin or DBeaver and save it as `docs/erd.png`.
+- Add the exported image to the repo and reference it here:
+  `![ERD](docs/erd.png)`
 
 ## User Roles
-
-- **Admin/Owner**: Can manage users and roles, add/edit/delete packages, update bookings, moderate reviews, view messages, and access all dashboard data.
-- **Agent**: Can view operations, update booking statuses, moderate reviews, and respond to contact messages. Agents cannot manage users or delete core package content.
-- **Traveler**: Can browse packages, request bookings, view their booking status history, create/edit/delete their own reviews, and send contact messages.
+- **Admin/Owner**: Full access
+- **Agent**: Booking/review/message management (no role management)
+- **Traveler**: Browse packages, request bookings, manage own reviews
 
 ## Test Accounts
-
-Use `P@$$w0rd!` for all seeded accounts.
-
+Use `P@$$w0rd!` for seeded accounts:
 - Admin: `admin@cielito.test`
 - Agent: `agent@cielito.test`
 - Traveler: `traveler@cielito.test`
 
-Do not commit real passwords or secrets. The seeded password is stored only as a bcrypt hash in `database/seed.sql`.
-
-## PostgreSQL Connection
-
-The app connects to PostgreSQL through this environment variable:
-
-```bash
-DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
-DATABASE_SSL=false
-```
-
-More setup details are in [`docs/postgresql-setup.md`](docs/postgresql-setup.md).
-
 ## Local Setup
-
-1. Install dependencies:
-
+1. Install:
    ```bash
    npm install
    ```
-
-2. Create a `.env` file:
-
+2. Copy example env:
    ```bash
    cp .env.example .env
    ```
-
-3. Create a PostgreSQL database and update `DATABASE_URL` in `.env`.
-
-4. Run schema and seed data:
-
+   Ensure `.env` uses `DATABASE_URL` (not `DB_URL`).
+3. Create DB and run:
    ```bash
    npm run db:setup
-   ```
-
-5. Confirm the app can connect to PostgreSQL:
-
-   ```bash
    npm run db:check
-   ```
-
-6. Start development:
-
-   ```bash
    npm run dev
    ```
-
-7. Open:
-
-   ```text
-   http://localhost:3000
-   ```
+4. Open `http://localhost:3000`
 
 ## Render Deployment
-
-This repo includes [`render.yaml`](render.yaml) as a starting blueprint.
-
-Required Render environment variables:
-
-```text
-NODE_ENV=production
-SESSION_SECRET=<long random generated value>
-DATABASE_URL=<Render PostgreSQL internal connection string>
-```
-
-After deploying, open the Render Shell and run:
-
-```bash
-npm run db:setup
-npm run db:check
-```
-
-That creates the tables and seeds the test accounts.
+Include `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV=production` on Render. Use the provided `render.yaml`. After deploy run `npm run db:setup` in Render Shell.
 
 ## Security Notes
-
-- Passwords are hashed with bcrypt.
-- Sessions use `httpOnly`, `sameSite`, and production-only secure cookies.
-- SQL queries use parameterized placeholders.
-- User input is validated with `express-validator`.
-- `.env` is ignored and should never be committed.
-- Production disables the development preview route.
+- Passwords hashed with bcrypt
+- Sessions use secure cookie settings in production
+- Parameterized SQL queries
+- Validate/sanitize input with `express-validator`
+- Do not commit `.env` or secrets
 
 ## Known Limitations
+- Images are currently referenced by URL only; no file-upload pipeline.
+- No pagination on package lists (may be slow with many records).
+- Admin dashboard is intentionally minimal (no analytics).
+- Some form validation may be missing on edge-case fields — validate before final grading.
 
-- Payment checkout is intentionally out of scope; bookings are requests, not paid orders.
-- The README links to an ERD reference, but a pgAdmin-exported ERD image still needs to be added if required by the instructor.

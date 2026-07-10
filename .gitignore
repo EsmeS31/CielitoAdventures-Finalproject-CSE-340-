@@ -4,3 +4,8 @@ node_modules/
 npm-debug.log*
 work/
 outputs/
+
+.env.local
+.env.*.local
+
+node_modules/

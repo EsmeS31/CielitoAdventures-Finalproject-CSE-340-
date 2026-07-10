@@ -1,4 +1,4 @@
-// ...existing code...
+
 import pg from "pg";
 import dotenv from "dotenv";
 
@@ -23,4 +23,3 @@ export const pool = new pg.Pool({
 export async function query(text, params) {
   return pool.query(text, params);
 }
-// ...existing code...
